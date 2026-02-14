@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Clean City - Smart Reporting</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="app">
+
+        <!-- 1. Landing Page -->
+        <section id="landing-page" class="page fade-in">
+            <div class="content">
+                <h1>Clean City</h1>
+                <p>Smart Reporting for a Cleaner Tomorrow</p>
+                <br>
+                <button class="btn btn-primary" onclick="router.navigate('login')">Get Started</button>
+            </div>
+        </section>
+
+        <!-- 2. Login / Register Page -->
+        <section id="login-page" class="page hidden fade-in"
+            style="padding: 2rem; display: flex; flex-direction: column; justify-content: center; height: 100%;">
+            <div class="glass-card">
+                <h2 style="text-align: center;">Welcome Back</h2>
+                <div class="form-group">
+                    <label>Name (for registration)</label>
+                    <input type="text" id="auth-name" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="auth-email" placeholder="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="auth-password" placeholder="••••••••">
+                </div>
+                <button class="btn btn-primary" onclick="auth.login()">Login</button>
+                <button class="btn btn-secondary" onclick="auth.register()" style="margin-top: 1rem;">Register</button>
+            </div>
+        </section>
+
+        <!-- 3. Dashboard -->
+        <section id="dashboard-page" class="page hidden fade-in" style="padding: 1.5rem;">
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
+                    <h3 style="margin:0;">Hello, <span id="user-name-display">User</span>! 👋</h3>
+                    <p style="margin:0; font-size: 0.9rem;">Let's make the city clean.</p>
+                </div>
+                <div class="glass-card"
+                    style="padding: 0.5rem 1rem; margin-bottom: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 1.2rem;">🏆</span>
+                    <strong id="user-points-display">0</strong>
+                </div>
+            </header>
+
+            <div class="glass-card" style="background: var(--gradient-main); color: white; border: none;">
+                <h2 style="color: white; margin-bottom: 0.5rem;">Impact Summary</h2>
+                <p style="color: rgba(255,255,255,0.9);">You are a <strong id="current-badge-display">New
+                        Citizen</strong></p>
+                <div class="progress-bar" style="background: rgba(255,255,255,0.3);">
+                    <div id="badge-progress" class="progress-fill" style="background: white;"></div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Report Waste -->
+                <div class="action-card" onclick="router.navigate('report')">
+                    <div class="icon">📷</div>
+                    <h3>Report Waste</h3>
+                </div>
+                <!-- Profile -->
+                <div class="action-card" onclick="router.navigate('profile')">
+                    <div class="icon">👤</div>
+                    <h3>My Profile</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Report Waste Page -->
+        <section id="report-page" class="page hidden slide-up" style="padding: 1.5rem;">
+            <button class="btn btn-secondary" onclick="router.navigate('dashboard')"
+                style="width: auto; padding: 0.5rem 1rem; margin-bottom: 1rem;">← Back</button>
+            <h2>Report Waste</h2>
+
+            <div class="glass-card">
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="report-location" placeholder="e.g. Central Park corner">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="report-desc" rows="3" placeholder="Describe the waste..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Upload Photo</label>
+                    <div style="border: 2px dashed #ccc; padding: 2rem; text-align: center; border-radius: 12px; cursor: pointer;"
+                        onclick="document.getElementById('report-file').click()">
+                        <span style="font-size: 2rem;">📸</span>
+                        <p style="margin: 0.5rem 0 0;">Tap to snap</p>
+                        <input type="file" id="report-file" style="display: none;" accept="image/*">
+                        <p id="file-name" style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--primary);">No file
+                            selected</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="wasteService.submitReport()">Submit Report</button>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div id="ai-loading" class="hidden"
+                style="position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(255,255,255,0.9); z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div style="font-size: 3rem; animation: spin 1s infinite linear;">🤖</div>
+                <h3 style="margin-top: 1rem;">AI Verifying...</h3>
+                <p>Checking for waste in image</p>
+            </div>
+        </section>
+
+        <!-- 5. Profile Page -->
+        <section id="profile-page" class="page hidden fade-in" style="padding: 1.5rem;">
+            <button class="btn btn-secondary" onclick="router.navigate('dashboard')"
+                style="width: auto; padding: 0.5rem 1rem; margin-bottom: 1rem;">← Back</button>
+
+            <div class="glass-card" style="text-align: center;">
+                <div
+                    style="width: 80px; height: 80px; background: var(--gradient-main); border-radius: 50%; margin: 0 auto 1rem; display: flex; alignItems: center; justify-content: center; color: white; font-size: 2rem; font-weight: bold;">
+                    <span id="profile-initial">U</span>
+                </div>
+                <h2 id="profile-name">User Name</h2>
+                <p id="profile-email">user@example.com</p>
+            </div>
+
+            <div class="badge-container">
+                <div class="badge-icon" id="profile-badge-icon">🌱</div>
+                <h3 id="profile-badge-name">New Citizen</h3>
+                <p>Total Points: <strong id="profile-points"
+                        style="color: var(--primary); font-size: 1.5rem;">0</strong></p>
+                <div class="progress-bar">
+                    <div id="profile-progress" class="progress-fill"></div>
+                </div>
+                <p style="font-size: 0.8rem; margin-top: 0.5rem;">Next Badge: <span id="next-badge-name">Green
+                        Ambassador</span></p>
+            </div>
+
+            <button class="btn btn-danger" onclick="auth.logout()">Log Out</button>
+        </section>
+
+        <!-- 6. Thank You Page -->
+        <section id="thank-you-page" class="page hidden fade-in"
+            style="padding: 2rem; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 5rem; margin-bottom: 1rem;">🎉</div>
+            <h2 style="color: var(--success);">Thank You!</h2>
+            <p>For Keeping the Environment Clean 🌱</p>
+
+            <div class="glass-card" style="margin-top: 2rem;">
+                <h3 id="earned-points-display" style="color: var(--primary); font-size: 2rem;">+5</h3>
+                <p>Points Added</p>
+            </div>
+
+            <button class="btn btn-primary" onclick="router.navigate('dashboard')" style="margin-top: 2rem;">Return
+                Home</button>
+        </section>
+
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
